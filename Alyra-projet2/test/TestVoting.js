@@ -61,45 +61,62 @@ contract('Voting', accounts => {
 
             expect(proposalReturned.description).to.be.equal(FIRST_PROPOSAL);
             expect(proposalReturned.voteCount).to.be.bignumber.equal(new BN(0));
-        });    
-        
+        });
+
         it("should revert when caller is not a voter", async () => {
             await expectRevert(VotingInstance.getOneProposal(0, {from: _nonVoter}), "You're not a voter");
         });
 
         it("should revert when the id does not exist", async() => {
             await VotingInstance.addVoter(_voter1, { from: _owner});
-            await expectRevert(VotingInstance.getOneProposal(0, {from : _voter1}), "VM Exception while processing transaction: revert");
+            await expectRevert(
+                VotingInstance.getOneProposal(0, {from : _voter1}),
+                "VM Exception while processing transaction: revert"
+            );
         });
     });
 
-    // addVoter
-    // describe("Test addVoter(address)", async() => {
-    //     it("should get one proposal", async () => {
-    //         await VotingInstance.startProposalsRegistering({from: _owner});
-    //         await VotingInstance.endProposalsRegistering({from: _owner});
-    //         await VotingInstance.startVotingSession({from: _owner});
+    /**
+     * @dev Tests de la fonction addVoter
+     */
+    describe("Test addVoter(address)", async() => {
+        it("should add a voter", async () => {
+            await VotingInstance.addVoter(_voter1, {from: _owner});
+            const voterReturned = await VotingInstance.getVoter(_voter1, {from: _voter1});
+            expect(voterReturned.isRegistered).to.be.true;
+        });
 
-    //         const voter = await VotingInstance.addVoter(_voter1, {from : _owner});
+        it('should emit VoterRegistered event', async function () {
+            expectEvent(
+                await VotingInstance.addVoter(_voter1, {from: _owner}),
+                'VoterRegistered',
+                {voterAddress: _voter1}
+            );
+        });
 
-    //         expect(proposalReturned.description).to.be.equal(FIRST_PROPOSAL);
-    //         expect(proposalReturned.voteCount).to.be.bignumber.equal(new BN(0));
-    //     });    
-        
-    //     it("should revert when caller is not the owner", async () => {
-    //         await expectRevert(VotingInstance.getOneProposal(0, {from: _nonVoter}), "You're not a voter");
-    //     });
+        it("should revert when caller is not the owner", async () => {
+            await expectRevert(
+                VotingInstance.addVoter(_voter1, {from: _voter1}),
+                "Ownable: caller is not the owner"
+            );
+        });
 
-    //     it("should revert with the bad workflow status", async() => {
-    //         await VotingInstance.addVoter(_voter1, { from: _owner});
-    //         await expectRevert(VotingInstance.getOneProposal(0, {from : _voter1}), "VM Exception while processing transaction: revert");
-    //     });
+        it("should revert when adding voter at the wrong step", async () => {
+            await VotingInstance.startProposalsRegistering({from: _owner});
+            await expectRevert(
+                VotingInstance.addVoter(_voter1, {from: _owner}),
+                "Voters registration is not open yet"
+            );
+        });
 
-    //     it("should revert when the address is already registered", async() => {
-    //         await VotingInstance.addVoter(_voter1, { from: _owner});
-    //         await expectRevert(VotingInstance.getOneProposal(0, {from : _voter1}), "VM Exception while processing transaction: revert");
-    //     });
-    // });
+        it("should revert when adding the same voter", async () => {
+            await VotingInstance.addVoter(_voter1, {from: _owner});
+            await expectRevert(
+                VotingInstance.addVoter(_voter1, {from: _owner}),
+                "Already registered"
+            );
+        });
+    });
 
     // addProposal
     // setVote
