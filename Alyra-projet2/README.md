@@ -9,15 +9,10 @@ Installation des librairies utiles :
 npm install -g truffle
 npm install dotenv @openzeppelin/test-helpers @truffle/hdwallet-provider @openzeppelin/contracts
 ```
-  
-- puis 
 ## Tests Unitaires
 ### Description
 Le fichier test/TestVoting.js contient l'ensemble des tests du Smart Contract contracts/Voting.sol.  
-  
-| Nom du test | Description |
-|-------------|-------------|
-| | |
+Chaque fonction du Smart Contract est testée de différentes manières : les cas passants, les événements émis et les revert.
 ### Exécution
 Il faut d'abord lancer ganache :  
 ```bash
