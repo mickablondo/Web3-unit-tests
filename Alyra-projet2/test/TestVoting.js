@@ -222,35 +222,189 @@ contract('Voting', accounts => {
         });
     });
 
-
-    // TODO !
     /**
      * @dev Tests des fonctions de modification d'état
      */
     describe("Test des changements d'état", async() => {
 
-        describe("Test de l'état initial", async() => {
-
+        describe("Test de l'état initial : RegisteringVoters", async() => {
+            it("should be the first status and there is no winner", async () => {
+                expect(await VotingInstance.winningProposalID.call()).to.be.bignumber.equal(new BN(0));
+                expect(await VotingInstance.workflowStatus.call()).to.be.bignumber.equal(new BN(0));
+            });
         });
         
         describe("Test startProposalsRegistering()", async() => {
-            
+            it("should start the proposals registering", async () => {
+                await VotingInstance.startProposalsRegistering({from: _owner});
+                expect(await VotingInstance.workflowStatus.call()).to.be.bignumber.equal(new BN(1));
+            });
+
+            it("should emit WorkflowStatusChange event", async() => {
+                expectEvent(
+                    await VotingInstance.startProposalsRegistering({from: _owner}),
+                    'WorkflowStatusChange',
+                    {previousStatus: new BN(0), newStatus: new BN(1)}
+                );
+            });
+
+            it("should revert when caller is not the owner", async () => {
+                await expectRevert(
+                    VotingInstance.startProposalsRegistering({from: _voter1}),
+                    "Ownable: caller is not the owner"
+                );
+            });
+
+            it("should revert when it is the wrong step", async () => {
+                await VotingInstance.startProposalsRegistering({from: _owner});
+                await VotingInstance.endProposalsRegistering({from: _owner});
+                await expectRevert(
+                    VotingInstance.startProposalsRegistering({from: _owner}),
+                    "Registering proposals cant be started now"
+                );
+            });
         });
         
         describe("Test endProposalsRegistering()", async() => {
-            
+            it("should end the proposals registering", async () => {
+                await VotingInstance.startProposalsRegistering({from: _owner});
+                await VotingInstance.endProposalsRegistering({from: _owner});
+                expect(await VotingInstance.workflowStatus.call()).to.be.bignumber.equal(new BN(2));
+            });
+
+            it("should emit WorkflowStatusChange event", async() => {
+                await VotingInstance.startProposalsRegistering({from: _owner});
+                expectEvent(
+                    await VotingInstance.endProposalsRegistering({from: _owner}),
+                    'WorkflowStatusChange',
+                    {previousStatus: new BN(1), newStatus: new BN(2)}
+                );
+            });
+
+            it("should revert when caller is not the owner", async () => {
+                await expectRevert(
+                    VotingInstance.endProposalsRegistering({from: _voter1}),
+                    "Ownable: caller is not the owner"
+                );
+            });
+
+            it("should revert when it is the wrong step", async () => {
+                await expectRevert(
+                    VotingInstance.endProposalsRegistering({from: _owner}),
+                    "Registering proposals havent started yet"
+                );
+            });           
         });
         
         describe("Test startVotingSession()", async() => {
-            
+            it("should start the voting session", async () => {
+                await VotingInstance.startProposalsRegistering({from: _owner});
+                await VotingInstance.endProposalsRegistering({from: _owner});
+                await VotingInstance.startVotingSession({from: _owner});
+                expect(await VotingInstance.workflowStatus.call()).to.be.bignumber.equal(new BN(3));
+            });
+
+            it("should emit WorkflowStatusChange event", async() => {
+                await VotingInstance.startProposalsRegistering({from: _owner});
+                await VotingInstance.endProposalsRegistering({from: _owner});
+                expectEvent(
+                    await VotingInstance.startVotingSession({from: _owner}),
+                    'WorkflowStatusChange',
+                    {previousStatus: new BN(2), newStatus: new BN(3)}
+                );
+            });
+
+            it("should revert when caller is not the owner", async () => {
+                await expectRevert(
+                    VotingInstance.startVotingSession({from: _voter1}),
+                    "Ownable: caller is not the owner"
+                );
+            });
+
+            it("should revert when it is the wrong step", async () => {
+                await expectRevert(
+                    VotingInstance.startVotingSession({from: _owner}),
+                    "Registering proposals phase is not finished"
+                );
+            });          
         });
 
         describe("Test endVotingSession()", async() => {
-            
+            it("should end the voting session", async () => {
+                await VotingInstance.startProposalsRegistering({from: _owner});
+                await VotingInstance.endProposalsRegistering({from: _owner});
+                await VotingInstance.startVotingSession({from: _owner});
+                await VotingInstance.endVotingSession({from: _owner});
+                expect(await VotingInstance.workflowStatus.call()).to.be.bignumber.equal(new BN(4));
+            });
+
+            it("should emit WorkflowStatusChange event", async() => {
+                await VotingInstance.startProposalsRegistering({from: _owner});
+                await VotingInstance.endProposalsRegistering({from: _owner});
+                await VotingInstance.startVotingSession({from: _owner});
+                expectEvent(
+                    await VotingInstance.endVotingSession({from: _owner}),
+                    'WorkflowStatusChange',
+                    {previousStatus: new BN(3), newStatus: new BN(4)}
+                );
+            });
+
+            it("should revert when caller is not the owner", async () => {
+                await expectRevert(
+                    VotingInstance.endVotingSession({from: _voter1}),
+                    "Ownable: caller is not the owner"
+                );
+            });
+
+            it("should revert when it is the wrong step", async () => {
+                await expectRevert(
+                    VotingInstance.endVotingSession({from: _owner}),
+                    "Voting session havent started yet"
+                );
+            });           
         });
 
         describe("Test tallyVotes()", async() => {
-            
+            it("should tally the votes", async() => {
+                await VotingInstance.addVoter(_voter1, {from: _owner});
+                await VotingInstance.addVoter(_voter2, {from: _owner});
+                await VotingInstance.addVoter(_voter3, {from: _owner});
+
+                await VotingInstance.startProposalsRegistering({from: _owner});
+                await VotingInstance.addProposal("autre proposal", {from: _voter1});
+                await VotingInstance.addProposal(PROPOSAL, {from: _voter2});
+                await VotingInstance.addProposal("encore une autre proposal", {from: _voter3});
+                await VotingInstance.endProposalsRegistering({from: _owner});
+
+                await VotingInstance.startVotingSession({from: _owner});
+                await VotingInstance.setVote(new BN(1), {from: _voter1});
+                await VotingInstance.setVote(new BN(2), {from: _voter2});
+                await VotingInstance.setVote(new BN(2), {from: _voter3});
+                await VotingInstance.endVotingSession({from: _owner});
+
+                expectEvent(
+                    await VotingInstance.tallyVotes({from: _owner}),
+                    "WorkflowStatusChange",
+                    {previousStatus: new BN(4), newStatus: new BN(5)}
+                );
+
+                expect(await VotingInstance.winningProposalID.call()).to.be.bignumber.equal(new BN(2));
+                expect(await VotingInstance.workflowStatus.call()).to.be.bignumber.equal(new BN(5));
+            });
+
+            it("should revert when caller is not the owner", async () => {
+                await expectRevert(
+                    VotingInstance.tallyVotes({from: _voter1}),
+                    "Ownable: caller is not the owner"
+                );
+            });
+
+            it("should revert when it is the wrong step", async () => {
+                await expectRevert(
+                    VotingInstance.tallyVotes({from: _owner}),
+                    "Current status is not voting session ended"
+                );
+            });  
         });
     });
 });

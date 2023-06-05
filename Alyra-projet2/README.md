@@ -37,5 +37,62 @@ truffle test
 ```
 ### Résultats
 ```bash
+  Contract: Voting
+    Test getVoter(address)
+      ✔ should get a voter
+      ✔ should revert when caller is not a voter (75ms)
+      ✔ should get empty return when the address is not an address voter
+    Test getOneProposal(uint)
+      ✔ should get one proposal (44ms)
+      ✔ should revert when caller is not a voter
+      ✔ should revert when the id does not exist
+    Test addVoter(address)
+      ✔ should add a voter
+      ✔ should emit VoterRegistered event
+      ✔ should revert when caller is not the owner
+      ✔ should revert when adding voter at the wrong step
+      ✔ should revert when adding the same voter
+    Test addProposal(string)
+      ✔ should add a proposal
+      ✔ should emit ProposalRegistered event
+      ✔ should revert when caller is not a voter
+      ✔ should revert when adding proposal at the wrong step
+      ✔ should revert when adding empty proposal
+    Test setVote(uint)
+      ✔ should set a vote
+      ✔ should emit Voted event
+      ✔ should revert when caller is not a voter
+      ✔ should revert when setting vote at the wrong step
+      ✔ should revert when trying to vote a second time
+      ✔ should revert when trying to vote for a non existent proposal
+    Test des changements d'état
+      Test de l'état initial : RegisteringVoters
+        ✔ should be the first status and there is no winner
+      Test startProposalsRegistering()
+        ✔ should start the proposals registering
+        ✔ should emit WorkflowStatusChange event
+        ✔ should revert when caller is not the owner
+        ✔ should revert when it is the wrong step (42ms)
+      Test endProposalsRegistering()
+        ✔ should end the proposals registering
+        ✔ should emit WorkflowStatusChange event
+        ✔ should revert when caller is not the owner
+        ✔ should revert when it is the wrong step
+      Test startVotingSession()
+        ✔ should start the voting session (67ms)
+        ✔ should emit WorkflowStatusChange event (51ms)
+        ✔ should revert when caller is not the owner
+        ✔ should revert when it is the wrong step
+      Test endVotingSession()
+        ✔ should end the voting session (74ms)
+        ✔ should emit WorkflowStatusChange event (67ms)
+        ✔ should revert when caller is not the owner
+        ✔ should revert when it is the wrong step
+      Test tallyVotes()
+        ✔ should tally the votes (300ms)
+        ✔ should revert when caller is not the owner
+        ✔ should revert when it is the wrong step
 
+
+  42 passing (3s)
 ```
