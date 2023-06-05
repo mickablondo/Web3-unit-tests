@@ -118,12 +118,139 @@ contract('Voting', accounts => {
         });
     });
 
-    // addProposal
-    // setVote
-    // etat initial = tester la valeur des variables publiques (status/gagnant)
-    // startProposalsRegistering
-    // endProposalsRegistering
-    // startVotingSession
-    // endVotingSession
-    // tallyVotes
+    /**
+     * @dev Tests de la fonction addProposal
+     */
+    describe("Test addProposal(string)", async() => {
+        beforeEach(async function() {
+            await VotingInstance.addVoter(_voter1, {from: _owner});
+            await VotingInstance.startProposalsRegistering({from: _owner});
+        });
+
+        it("should add a proposal", async () => {
+            await VotingInstance.addProposal(PROPOSAL, {from: _voter1});
+
+            const proposalReturned = await VotingInstance.getOneProposal(1, {from: _voter1});
+            expect(proposalReturned.description).to.be.equal(PROPOSAL);
+        });
+
+        it('should emit ProposalRegistered event', async function () {
+            expectEvent(
+                await VotingInstance.addProposal(PROPOSAL, {from: _voter1}),
+                'ProposalRegistered',
+                {proposalId: new BN(1)}
+            );
+        });
+
+        it("should revert when caller is not a voter", async () => {
+            await expectRevert(
+                VotingInstance.addProposal(PROPOSAL, {from: _nonVoter}),
+                "You're not a voter"
+            );
+        });
+
+        it("should revert when adding proposal at the wrong step", async () => {
+            await VotingInstance.endProposalsRegistering({from: _owner});
+            await expectRevert(
+                VotingInstance.addProposal(PROPOSAL, {from: _voter1}),
+                "Proposals are not allowed yet"
+            );
+        });
+
+        it("should revert when adding empty proposal", async () => {
+            await expectRevert(
+                VotingInstance.addProposal("", {from: _voter1}),
+                "Vous ne pouvez pas ne rien proposer"
+            );
+        });
+    });
+
+    /**
+     * @dev Tests de la fonction setVote
+     */
+    describe("Test setVote(uint)", async() => {
+        beforeEach(async function() {
+            await VotingInstance.addVoter(_voter1, {from: _owner});
+            await VotingInstance.startProposalsRegistering({from: _owner});
+            await VotingInstance.addProposal(PROPOSAL, {from: _voter1});
+            await VotingInstance.endProposalsRegistering({from: _owner});
+            await VotingInstance.startVotingSession({from: _owner});
+        });
+
+        it("should set a vote", async () => {
+            await VotingInstance.setVote(new BN(1), {from: _voter1});
+            const voterReturned = await VotingInstance.getVoter(_voter1, {from: _voter1});
+            expect(voterReturned.votedProposalId).to.be.bignumber.equal(new BN(1));
+        });
+
+        it('should emit Voted event', async function () {
+            expectEvent(
+                await VotingInstance.setVote(new BN(1), {from: _voter1}),
+                'Voted',
+                {voter: _voter1, proposalId: new BN(1)}
+            );
+        });
+
+        it("should revert when caller is not a voter", async () => {
+            await expectRevert(
+                VotingInstance.setVote(new BN(1), {from: _nonVoter}),
+                "You're not a voter"
+            );
+        });
+
+        it("should revert when setting vote at the wrong step", async () => {
+            await VotingInstance.endVotingSession({from: _owner});
+            await expectRevert(
+                VotingInstance.setVote(new BN(1), {from: _voter1}),
+                "Voting session havent started yet"
+            );
+        });
+
+        it("should revert when trying to vote a second time", async () => {
+            await VotingInstance.setVote(new BN(1), {from: _voter1});
+            await expectRevert(
+                VotingInstance.setVote(new BN(0), {from: _voter1}),
+                "You have already voted"
+            );
+        });
+
+        it("should revert when trying to vote for a non existent proposal", async () => {
+            await expectRevert(
+                VotingInstance.setVote(new BN(50), {from: _voter1}),
+                "Proposal not found"
+            );
+        });
+    });
+
+
+    // TODO !
+    /**
+     * @dev Tests des fonctions de modification d'état
+     */
+    describe("Test des changements d'état", async() => {
+
+        describe("Test de l'état initial", async() => {
+
+        });
+        
+        describe("Test startProposalsRegistering()", async() => {
+            
+        });
+        
+        describe("Test endProposalsRegistering()", async() => {
+            
+        });
+        
+        describe("Test startVotingSession()", async() => {
+            
+        });
+
+        describe("Test endVotingSession()", async() => {
+            
+        });
+
+        describe("Test tallyVotes()", async() => {
+            
+        });
+    });
 });
