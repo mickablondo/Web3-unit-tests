@@ -12,7 +12,20 @@ npm install dotenv @openzeppelin/test-helpers @truffle/hdwallet-provider @openze
 ## Tests Unitaires
 ### Description
 Le fichier test/TestVoting.js contient l'ensemble des tests du Smart Contract contracts/Voting.sol.  
-Chaque fonction du Smart Contract est testée de différentes manières : les cas passants, les événements émis et les revert.
+Chaque fonction du Smart Contract est testée de différentes manières : les cas passants, les événements émis et les revert.  
+| Fonction | Description | Autorisation |
+|----------|-------------|--------------|
+| getVoter(address) | Récupère les informations d'un votant | Ceux qui votent |
+| getOneProposal(uint) | Récupère une proposition | Ceux qui votent |
+| addVoter(address) | Ajouter un votant | Propriétaire du SC |
+| addProposal(string) | Ajouter une proposition | Ceux qui votent |
+| setVote(uint) | Permet de voter | Ceux qui votent |
+| startProposalsRegistering() | Changement de statut : début proposition | Propriétaire du SC |
+| endProposalsRegistering() | Changement de statut : fin proposition | Propriétaire du SC |
+| startVotingSession() | Changement de statut : début session de vote | Propriétaire du SC |
+| endVotingSession() | Changement de statut : fin session de vote | Propriétaire du SC |
+| tallyVotes() | Changement de statut : fin - comptage des votes | Propriétaire du SC |
+
 ### Exécution
 Il faut d'abord lancer ganache :  
 ```bash
