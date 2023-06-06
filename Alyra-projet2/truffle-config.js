@@ -11,6 +11,10 @@ module.exports = {
   },
 
   mocha: {
+    reporter: 'eth-gas-reporter',
+    reporterOptions: {
+      excludeContracts: ['Migrations']
+    }
   },
 
   // Configure your compilers
