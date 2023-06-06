@@ -18,6 +18,14 @@ contract('Voting', accounts => {
         VotingInstance = await Voting.new({from: _owner});
     });
 
+    describe("Test de l'état initial", async() => {
+        it("should be the good owner, the first status and there is no winner", async () => {
+            expect(await VotingInstance.owner()).to.be.equal(_owner);
+            expect(await VotingInstance.winningProposalID.call()).to.be.bignumber.equal(new BN(0));
+            expect(await VotingInstance.workflowStatus.call()).to.be.bignumber.equal(new BN(0));
+        });
+    })
+
     /**
      * @dev Tests de la fonction getVoter
      * 
@@ -226,14 +234,6 @@ contract('Voting', accounts => {
      * @dev Tests des fonctions de modification d'état
      */
     describe("Test des changements d'état", async() => {
-
-        describe("Test de l'état initial : RegisteringVoters", async() => {
-            it("should be the first status and there is no winner", async () => {
-                expect(await VotingInstance.winningProposalID.call()).to.be.bignumber.equal(new BN(0));
-                expect(await VotingInstance.workflowStatus.call()).to.be.bignumber.equal(new BN(0));
-            });
-        });
-        
         describe("Test startProposalsRegistering()", async() => {
             it("should start the proposals registering", async () => {
                 await VotingInstance.startProposalsRegistering({from: _owner});
