@@ -11,7 +11,7 @@ npm install dotenv @openzeppelin/test-helpers @truffle/hdwallet-provider @openze
 ```
 ## Tests Unitaires
 ### Description
-Le fichier test/TestVoting.js contient l'ensemble des tests du Smart Contract contracts/Voting.sol.  
+Le fichier test/Voting.test.js contient l'ensemble des tests du Smart Contract contracts/Voting.sol.  
 Chaque fonction du Smart Contract est testée de différentes manières : les cas passants, les événements émis et les revert.  
 | Fonction | Description | Autorisation |
 |----------|-------------|--------------|
@@ -38,12 +38,14 @@ truffle test
 ### Résultats
 ```bash
   Contract: Voting
+    Test de l'état initial
+      ✔ should be the good owner, the first status and there is no winner
     Test getVoter(address)
       ✔ should get a voter
-      ✔ should revert when caller is not a voter (75ms)
+      ✔ should revert when caller is not a voter (72ms)
       ✔ should get empty return when the address is not an address voter
     Test getOneProposal(uint)
-      ✔ should get one proposal (44ms)
+      ✔ should get one proposal (43ms)
       ✔ should revert when caller is not a voter
       ✔ should revert when the id does not exist
     Test addVoter(address)
@@ -66,33 +68,33 @@ truffle test
       ✔ should revert when trying to vote a second time
       ✔ should revert when trying to vote for a non existent proposal
     Test des changements d'état
-      Test de l'état initial : RegisteringVoters
-        ✔ should be the first status and there is no winner
       Test startProposalsRegistering()
         ✔ should start the proposals registering
         ✔ should emit WorkflowStatusChange event
         ✔ should revert when caller is not the owner
-        ✔ should revert when it is the wrong step (42ms)
+        ✔ should revert when it is the wrong step (38ms)
       Test endProposalsRegistering()
-        ✔ should end the proposals registering
-        ✔ should emit WorkflowStatusChange event
+        ✔ should end the proposals registering (40ms)
+        ✔ should emit WorkflowStatusChange event (48ms)
         ✔ should revert when caller is not the owner
         ✔ should revert when it is the wrong step
       Test startVotingSession()
-        ✔ should start the voting session (67ms)
-        ✔ should emit WorkflowStatusChange event (51ms)
+        ✔ should start the voting session (52ms)
+        ✔ should emit WorkflowStatusChange event (49ms)
         ✔ should revert when caller is not the owner
         ✔ should revert when it is the wrong step
       Test endVotingSession()
-        ✔ should end the voting session (74ms)
-        ✔ should emit WorkflowStatusChange event (67ms)
+        ✔ should end the voting session (69ms)
+        ✔ should emit WorkflowStatusChange event (64ms)
         ✔ should revert when caller is not the owner
         ✔ should revert when it is the wrong step
       Test tallyVotes()
-        ✔ should tally the votes (300ms)
+        ✔ should tally the votes (275ms)
         ✔ should revert when caller is not the owner
         ✔ should revert when it is the wrong step
 
 
   42 passing (3s)
 ```
+### Couverture
+### Gas Report
