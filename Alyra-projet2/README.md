@@ -105,10 +105,7 @@ npm install --save-dev eth-gas-reporter
 Et modifier son fichier truffle-config.js :  
 ```JS
   mocha: {
-    reporter: 'eth-gas-reporter',
-    reporterOptions: {
-      excludeContracts: ['Migrations']
-    }
+    reporter: 'eth-gas-reporter'
   },
 ```
 Le résultat :  
