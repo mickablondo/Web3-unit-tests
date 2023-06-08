@@ -362,31 +362,39 @@ contract('Voting', accounts => {
         });
 
         describe("Test tallyVotes()", async() => {
-            it("should tally the votes", async() => {
-                await VotingInstance.addVoter(_voter1, {from: _owner});
-                await VotingInstance.addVoter(_voter2, {from: _owner});
-                await VotingInstance.addVoter(_voter3, {from: _owner});
-
-                await VotingInstance.startProposalsRegistering({from: _owner});
-                await VotingInstance.addProposal("autre proposal", {from: _voter1});
-                await VotingInstance.addProposal(PROPOSAL, {from: _voter2});
-                await VotingInstance.addProposal("encore une autre proposal", {from: _voter3});
-                await VotingInstance.endProposalsRegistering({from: _owner});
-
-                await VotingInstance.startVotingSession({from: _owner});
-                await VotingInstance.setVote(new BN(1), {from: _voter1});
-                await VotingInstance.setVote(new BN(2), {from: _voter2});
-                await VotingInstance.setVote(new BN(2), {from: _voter3});
-                await VotingInstance.endVotingSession({from: _owner});
-
-                expectEvent(
-                    await VotingInstance.tallyVotes({from: _owner}),
-                    "WorkflowStatusChange",
-                    {previousStatus: new BN(4), newStatus: new BN(5)}
-                );
-
-                expect(await VotingInstance.winningProposalID.call()).to.be.bignumber.equal(new BN(2));
-                expect(await VotingInstance.workflowStatus.call()).to.be.bignumber.equal(new BN(5));
+            describe("Tests OK", async() => {
+                beforeEach(async function() {
+                    await VotingInstance.addVoter(_voter1, {from: _owner});
+                    await VotingInstance.addVoter(_voter2, {from: _owner});
+                    await VotingInstance.addVoter(_voter3, {from: _owner});
+    
+                    await VotingInstance.startProposalsRegistering({from: _owner});
+                    await VotingInstance.addProposal("autre proposal", {from: _voter1});
+                    await VotingInstance.addProposal(PROPOSAL, {from: _voter2});
+                    await VotingInstance.addProposal("encore une autre proposal", {from: _voter3});
+                    await VotingInstance.endProposalsRegistering({from: _owner});
+    
+                    await VotingInstance.startVotingSession({from: _owner});
+                    await VotingInstance.setVote(new BN(1), {from: _voter1});
+                    await VotingInstance.setVote(new BN(2), {from: _voter2});
+                    await VotingInstance.setVote(new BN(2), {from: _voter3});
+                    await VotingInstance.endVotingSession({from: _owner});
+                });
+    
+                it("should tally the votes and the winner is known", async() => {
+                    await VotingInstance.tallyVotes({from: _owner});
+    
+                    expect(await VotingInstance.winningProposalID.call()).to.be.bignumber.equal(new BN(2));
+                    expect(await VotingInstance.workflowStatus.call()).to.be.bignumber.equal(new BN(5));
+                });
+    
+                it("should tally the votes and emit the event", async() => {
+                    expectEvent(
+                        await VotingInstance.tallyVotes({from: _owner}),
+                        "WorkflowStatusChange",
+                        {previousStatus: new BN(4), newStatus: new BN(5)}
+                    );
+                });
             });
 
             it("should revert when caller is not the owner", async () => {

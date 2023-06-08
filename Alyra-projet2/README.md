@@ -24,7 +24,9 @@ Chaque fonction du Smart Contract est testée de différentes manières : les ca
 | endProposalsRegistering() | Changement de statut : fin proposition | Propriétaire du SC |
 | startVotingSession() | Changement de statut : début session de vote | Propriétaire du SC |
 | endVotingSession() | Changement de statut : fin session de vote | Propriétaire du SC |
-| tallyVotes() | Changement de statut : fin - comptage des votes | Propriétaire du SC |
+| tallyVotes() | Changement de statut : fin - comptage des votes | Propriétaire du SC |  
+  
+TODO : Expliquer la séparation des tests  
 
 ### Exécution
 Il faut d'abord lancer ganache :  
@@ -97,6 +99,23 @@ truffle test
   42 passing (3s)
 ```
 ### Couverture
+Suite à l'[issue](https://github.com/sc-forks/solidity-coverage/issues/696) en cours concernant les erreurs de solidity-coverage sur Truffle, j'ai utilisé un projet utilisant Hardhat (et le plugin [hardhat-truffle5](https://hardhat.org/hardhat-runner/plugins/nomiclabs-hardhat-truffle5) ) dans lequel j'ai copié mon Smart Contract et mon fichier de test pour avoir la couverture de test suivante :  
+
+```bash
+npx hardhat coverage --testfiles "test/unit/Voting.test.js"
+```  
+  
+```bash
+-------------|----------|----------|----------|----------|----------------|
+File         |  % Stmts | % Branch |  % Funcs |  % Lines |Uncovered Lines |
+-------------|----------|----------|----------|----------|----------------|
+ contracts/  |      100 |      100 |      100 |      100 |                |
+  Voting.sol |      100 |      100 |      100 |      100 |                |
+-------------|----------|----------|----------|----------|----------------|
+All files    |      100 |      100 |      100 |      100 |                |
+-------------|----------|----------|----------|----------|----------------|
+```
+
 ### Gas Report
 Pour calculer le coût en gas des différentes fonctions, il faut installer eth-gas-reporter :  
 ```bash
@@ -117,21 +136,21 @@ Le résultat :
 ·············|·····························|··············|·············|·············|··············|··············
 |  Contract  ·  Method                     ·  Min         ·  Max        ·  Avg        ·  # calls     ·  eur (avg)  │
 ·············|·····························|··············|·············|·············|··············|··············
-|  Voting    ·  addProposal                ·       59285  ·      59417  ·      59295  ·          13  ·          -  │
+|  Voting    ·  addProposal                ·       59285  ·      59417  ·      59302  ·          16  ·          -  │
 ·············|·····························|··············|·············|·············|··············|··············
-|  Voting    ·  addVoter                   ·       50185  ·      50197  ·      50197  ·          29  ·          -  │
+|  Voting    ·  addVoter                   ·       50185  ·      50197  ·      50196  ·          32  ·          -  │
 ·············|·····························|··············|·············|·············|··············|··············
-|  Voting    ·  endProposalsRegistering    ·           -  ·          -  ·      30587  ·          19  ·          -  │
+|  Voting    ·  endProposalsRegistering    ·           -  ·          -  ·      30587  ·          20  ·          -  │
 ·············|·····························|··············|·············|·············|··············|··············
-|  Voting    ·  endVotingSession           ·           -  ·          -  ·      30521  ·           7  ·          -  │
+|  Voting    ·  endVotingSession           ·           -  ·          -  ·      30521  ·           8  ·          -  │
 ·············|·····························|··············|·············|·············|··············|··············
-|  Voting    ·  setVote                    ·       60885  ·      77985  ·      76085  ·           9  ·          -  │
+|  Voting    ·  setVote                    ·       60885  ·      77985  ·      75135  ·          12  ·          -  │
 ·············|·····························|··············|·············|·············|··············|··············
-|  Voting    ·  startProposalsRegistering  ·           -  ·          -  ·      95003  ·          29  ·          -  │
+|  Voting    ·  startProposalsRegistering  ·           -  ·          -  ·      95003  ·          30  ·          -  │
 ·············|·····························|··············|·············|·············|··············|··············
-|  Voting    ·  startVotingSession         ·           -  ·          -  ·      30542  ·          15  ·          -  │
+|  Voting    ·  startVotingSession         ·           -  ·          -  ·      30542  ·          16  ·          -  │
 ·············|·····························|··············|·············|·············|··············|··············
-|  Voting    ·  tallyVotes                 ·           -  ·          -  ·      66439  ·           2  ·          -  │
+|  Voting    ·  tallyVotes                 ·           -  ·          -  ·      66439  ·           3  ·          -  │
 ·············|·····························|··············|·············|·············|··············|··············
 |  Deployments                             ·                                          ·  % of limit  ·             │
 ···········································|··············|·············|·············|··············|··············
