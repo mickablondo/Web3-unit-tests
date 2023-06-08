@@ -77,10 +77,7 @@ contract('Voting', accounts => {
 
         it("should revert when the id does not exist", async() => {
             await VotingInstance.addVoter(_voter1, { from: _owner});
-            await expectRevert(
-                VotingInstance.getOneProposal(0, {from : _voter1}),
-                "VM Exception while processing transaction: revert"
-            );
+            await expectRevert.unspecified(VotingInstance.getOneProposal(0, {from : _voter1}));
         });
     });
 
