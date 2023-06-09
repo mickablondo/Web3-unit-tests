@@ -1,8 +1,6 @@
 # Alyra - Projet 2
 ## Description du projet
 Fournir les tests unitaires d'un Smart Contract qui gère un système de vote simplifié.  
-## Stack technique
-![Solidity](https://img.shields.io/badge/Solidity-%23363636.svg?style=for-the-badge&logo=solidity&logoColor=white) ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E) ![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white)
 ## Pré-requis
 Installation des librairies utiles :  
 ```bash
@@ -10,7 +8,7 @@ npm install -g truffle
 npm install dotenv @openzeppelin/test-helpers @truffle/hdwallet-provider @openzeppelin/contracts
 ```
 ## Tests Unitaires
-### Description
+### Description générale
 Le fichier test/Voting.test.js contient l'ensemble des tests du Smart Contract contracts/Voting.sol.  
 Chaque fonction du Smart Contract est testée de différentes manières : les cas passants, les événements émis et les revert.  
 | Fonction | Description | Autorisation |
@@ -27,6 +25,26 @@ Chaque fonction du Smart Contract est testée de différentes manières : les ca
 | tallyVotes() | Changement de statut : fin - comptage des votes | Propriétaire du SC |  
   
 TODO : Expliquer la séparation des tests  
+### Description détaillée
+1. Etat initial
+    - vérification du propriétaire du Smart Contract
+    - vérification des différentes données à l'état initial du système de vote
+2. Autorisations
+   1. Vérification des onlyOwner
+      - addVoter
+      - startProposalsRegistering
+      - endProposalsRegistering
+      - startVotingSession
+      - endVotingSession
+      - tallyVotes
+   2. Vérification des onlyVoters
+      - getVoter
+      - getOneProposal
+      - addProposal
+      - setVote
+3. Validation du changement de statut
+   1. 
+4. 
 
 ### Exécution
 Il faut d'abord lancer ganache :  
@@ -99,7 +117,7 @@ truffle test
   42 passing (3s)
 ```
 ### Couverture
-Suite à l'[issue](https://github.com/sc-forks/solidity-coverage/issues/696) en cours concernant les erreurs de solidity-coverage sur Truffle, j'ai utilisé un projet utilisant Hardhat (et le plugin [hardhat-truffle5](https://hardhat.org/hardhat-runner/plugins/nomiclabs-hardhat-truffle5) ) dans lequel j'ai copié mon Smart Contract et mon fichier de test pour avoir la couverture de test suivante :  
+Suite à l'[issue](https://github.com/sc-forks/solidity-coverage/issues/696) en cours concernant les erreurs de solidity-coverage sur Truffle, j'ai utilisé un [projet utilisant Hardhat](https://github.com/mickablondo/Web3-tests-unitaires/tree/master/hardhat-test) avec le plugin [hardhat-truffle5](https://hardhat.org/hardhat-runner/plugins/nomiclabs-hardhat-truffle5) dans lequel j'ai copié mon Smart Contract et mon fichier de test pour avoir la couverture de test suivante :  
 
 ```bash
 npx hardhat coverage --testfiles "test/unit/Voting.test.js"
