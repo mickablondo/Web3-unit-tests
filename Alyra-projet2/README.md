@@ -24,7 +24,6 @@ Chaque fonction du Smart Contract est testée de différentes manières : les ca
 | endVotingSession() | Changement de statut : fin session de vote | Propriétaire du SC |
 | tallyVotes() | Changement de statut : fin - comptage des votes | Propriétaire du SC |  
   
-TODO : Expliquer la séparation des tests  
 ### Description détaillée
 1. Etat initial
     - vérification du propriétaire du Smart Contract
