@@ -18,13 +18,29 @@ contract('Voting', accounts => {
         VotingInstance = await Voting.new({from: _owner});
     });
 
-    describe("Test de l'état initial", async() => {
-        it("should be the good owner, the first status and there is no winner", async () => { // TODO : à diviser en 3
+    describe("Etat initial", async() => {
+        it("should be the good owner at the initial step", async () => {
             expect(await VotingInstance.owner()).to.be.equal(_owner);
+        });
+
+        it("should return 0 for the winning proposal id", async () => {
             expect(await VotingInstance.winningProposalID.call()).to.be.bignumber.equal(new BN(0));
+        });
+
+        it("should be the first status  at the initial step", async () => {
             expect(await VotingInstance.workflowStatus.call()).to.be.bignumber.equal(new BN(0));
         });
     })
+
+    describe("Tests des autorisations", async() => {
+        context("Fonctions avec onlyOwner", async() => {
+            // TODO
+        });
+
+        context("Fonctions avec onlyVoters", async() => {
+            // TODO
+        });
+    });
 
     /**
      * @dev Tests de la fonction getVoter

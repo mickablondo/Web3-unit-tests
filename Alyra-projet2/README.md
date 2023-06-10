@@ -45,23 +45,42 @@ Chaque fonction du Smart Contract, présentée ci-dessous, est testée de diffé
 3. Etape par étape
    1. Enregistrement des votants
       - ajout d'un votant
+      - test de l'évènement émis à l'ajout d'un votant
       - récupération d'un votant   
-      - récupération d'un non votant
-      - Test workflow - appels aux autres fonctions : <i>ce test ne sera pas réalisé à chaque étape</i>
+      - demande de récupération d'un non votant
+      - ajout d'un votant déjà existant ne doit pas être possible
+      - Test workflow - appels aux autres fonctions : endProposalsRegistering, startVotingSession, endVotingSession, tallyVotes <i>tous ces tests ne seront pas réalisés à chaque étape mais pourraient l'être</i>
+      - Changement d'état du workflow : étape suivante
+      - Changement d'état du workflow : gestion de l'événement
    2. Démarrage de l'ajout des propositions
       - ajout d'une proposition
-      - récupération de l'évènement
+      - test de l'évènement émis à l'ajout d'une proposition
+      - ajout d'une proposition vide
+      - Test workflow - appel aux autres fonctions : addVoter
+      - Changement d'état du workflow : étape suivante
+      - Changement d'état du workflow : gestion de l'événement
+   3. Fin de l'ajout des propositions
       - récupération d'une proposition
-      - ...
-   3. Fin de l'ajout des proposition
-      - ...   
+      - demande de récupération d'une porposition dont l'id n'existe pas
+      - Test workflow - appel aux autres fonctions : addProposal, setVote, startProposalsRegistering
+      - Changement d'état du workflow : étape suivante
+      - Changement d'état du workflow : gestion de l'événement
    4. Démarrage de la session de vote
       - ajout d'un vote
-      - récupération d'un votant pour vérifier son vote
+      - test de l'évènement émis à l'ajout d'un vote
+      - ajout d'un second vote pour un même votant
+      - ajout d'un vote pour une proposition non existante
+      - Changement d'état du workflow : étape suivante
+      - Changement d'état du workflow : gestion de l'événement
    5. Fin de la session de vote  
-      - ...   
+      - récupération d'un votant pour vérifier son vote
+      - Changement d'état du workflow : étape suivante
+      - Changement d'état du workflow : gestion de l'événement
    6. Comptage des points et fin du jeu
-      - ...   
+      - Simulation complète jusqu'au comptage des votes avec 3 votants
+      - récupération du gagnant
+      - Changement d'état du workflow : étape suivante
+      - Changement d'état du workflow : gestion de l'événement
 
 ### Exécution
 Il faut d'abord lancer ganache :  
