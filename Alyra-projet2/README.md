@@ -10,7 +10,7 @@ npm install dotenv @openzeppelin/test-helpers @truffle/hdwallet-provider @openze
 ## Tests Unitaires
 ### Description générale
 Le fichier test/Voting.test.js contient l'ensemble des tests du Smart Contract contracts/Voting.sol.  
-Chaque fonction du Smart Contract est testée de différentes manières : les cas passants, les événements émis et les revert.  
+Chaque fonction du Smart Contract, présentée ci-dessous, est testée de différentes manières : les cas passants, les événements émis et les revert à différentes étapes du workflow.  
 | Fonction | Description | Autorisation |
 |----------|-------------|--------------|
 | getVoter(address) | Récupère les informations d'un votant | Ceux qui votent |
@@ -27,7 +27,8 @@ Chaque fonction du Smart Contract est testée de différentes manières : les ca
 ### Description détaillée
 1. Etat initial
     - vérification du propriétaire du Smart Contract
-    - vérification des différentes données à l'état initial du système de vote
+    - vérification du bon état du workflow
+    - vérification de l'état initial de l'id du gagnant
 2. Autorisations
    1. Vérification des onlyOwner
       - addVoter
@@ -41,9 +42,26 @@ Chaque fonction du Smart Contract est testée de différentes manières : les ca
       - getOneProposal
       - addProposal
       - setVote
-3. Validation du changement de statut
-   1. 
-4. 
+3. Etape par étape
+   1. Enregistrement des votants
+      - ajout d'un votant
+      - récupération d'un votant   
+      - récupération d'un non votant
+      - Test workflow - appels aux autres fonctions : <i>ce test ne sera pas réalisé à chaque étape</i>
+   2. Démarrage de l'ajout des propositions
+      - ajout d'une proposition
+      - récupération de l'évènement
+      - récupération d'une proposition
+      - ...
+   3. Fin de l'ajout des proposition
+      - ...   
+   4. Démarrage de la session de vote
+      - ajout d'un vote
+      - récupération d'un votant pour vérifier son vote
+   5. Fin de la session de vote  
+      - ...   
+   6. Comptage des points et fin du jeu
+      - ...   
 
 ### Exécution
 Il faut d'abord lancer ganache :  

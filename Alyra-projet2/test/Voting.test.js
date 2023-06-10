@@ -19,7 +19,7 @@ contract('Voting', accounts => {
     });
 
     describe("Test de l'état initial", async() => {
-        it("should be the good owner, the first status and there is no winner", async () => {
+        it("should be the good owner, the first status and there is no winner", async () => { // TODO : à diviser en 3
             expect(await VotingInstance.owner()).to.be.equal(_owner);
             expect(await VotingInstance.winningProposalID.call()).to.be.bignumber.equal(new BN(0));
             expect(await VotingInstance.workflowStatus.call()).to.be.bignumber.equal(new BN(0));
