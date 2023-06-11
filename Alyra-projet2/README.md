@@ -43,7 +43,7 @@ Chaque fonction du Smart Contract, présentée ci-dessous, est testée de diffé
       - demande de récupération d'un votant non enregistré
       - vérification que l'ajout d'un votant déjà existant ne doit pas être possible
       - Vérification du changement d'état du workflow : étape suivante, gestion de l'évènement
-      - Test workflow - appels aux autres fonctions : endProposalsRegistering, startVotingSession, endVotingSession, tallyVotes <i>tous ces tests ne seront pas réalisés à chaque étape mais pourraient l'être</i>
+      - Test workflow - appels aux autres fonctions (<i>tous ces tests ne seront pas réalisés à chaque étape mais pourraient l'être</i>) : endProposalsRegistering, startVotingSession, endVotingSession, tallyVotes
    2. Démarrage de l'ajout des propositions
       - ajout d'une proposition
       - test de l'évènement émis à l'ajout d'une proposition
