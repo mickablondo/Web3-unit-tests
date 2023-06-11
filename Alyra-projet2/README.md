@@ -31,17 +31,9 @@ Chaque fonction du Smart Contract, présentée ci-dessous, est testée de diffé
     - vérification de l'état initial de l'id du gagnant
 2. Autorisations
    1. Vérification des onlyOwner
-      - addVoter
-      - startProposalsRegistering
-      - endProposalsRegistering
-      - startVotingSession
-      - endVotingSession
-      - tallyVotes
+      - addVoter, startProposalsRegistering, endProposalsRegistering, startVotingSession, endVotingSession, tallyVotes
    2. Vérification des onlyVoters
-      - getVoter
-      - getOneProposal
-      - addProposal
-      - setVote
+      - getVoter, getOneProposal, addProposal, setVote
 3. Etape par étape
    1. Enregistrement des votants
       - ajout d'un votant
