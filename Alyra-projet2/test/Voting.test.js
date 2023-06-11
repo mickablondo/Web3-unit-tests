@@ -35,7 +35,7 @@ contract('Voting', accounts => {
     })
 
     /**
-     * Tests sur les différentes autorisations d'accès aux fonctions
+     * @dev Tests sur les différentes autorisations d'accès aux fonctions
      */
     describe("Tests des autorisations", async() => {
         context("Fonctions avec onlyOwner", async() => {
@@ -397,27 +397,6 @@ contract('Voting', accounts => {
                     );
                 });
             });
-        });
-    });
-
-
-/* --------------------------------------------------------- */
-
-    /**
-     * @dev Tests des fonctions de modification d'état
-     */
-    describe("Test des changements d'état", async() => {
-
-        describe("Test tallyVotes()", async() => {
-            describe("Tests OK", async() => {
-                beforeEach(async function() {
-                    
-    
-                    
-                });
-    
-                
-            }); 
         });
     });
 });
