@@ -36,43 +36,36 @@ Chaque fonction du Smart Contract, présentée ci-dessous, est testée de diffé
       - getVoter, getOneProposal, addProposal, setVote
 3. Etape par étape
    1. Enregistrement des votants
-      - ajout d'un votant
-      - test de l'évènement émis à l'ajout d'un votant
-      - récupération d'un votant   
-      - demande de récupération d'un non votant
-      - ajout d'un votant déjà existant ne doit pas être possible
+      - vérification que le votant est bien enregistré
+      - vérification que le votant n'a pas encore de vote enregistré
+      - vérification que le votant n'a pas encore de proposition enregistrée
+      - test de l'évènement émis à l'ajout d'un votant   
+      - demande de récupération d'un votant non enregistré
+      - vérification que l'ajout d'un votant déjà existant ne doit pas être possible
+      - Vérification du changement d'état du workflow : étape suivante, gestion de l'évènement
       - Test workflow - appels aux autres fonctions : endProposalsRegistering, startVotingSession, endVotingSession, tallyVotes <i>tous ces tests ne seront pas réalisés à chaque étape mais pourraient l'être</i>
-      - Changement d'état du workflow : étape suivante
-      - Changement d'état du workflow : gestion de l'événement
    2. Démarrage de l'ajout des propositions
       - ajout d'une proposition
       - test de l'évènement émis à l'ajout d'une proposition
       - ajout d'une proposition vide
+      - Vérification du changement d'état du workflow : étape suivante, gestion de l'évènement
       - Test workflow - appel aux autres fonctions : addVoter
-      - Changement d'état du workflow : étape suivante
-      - Changement d'état du workflow : gestion de l'événement
    3. Fin de l'ajout des propositions
       - récupération d'une proposition
-      - demande de récupération d'une porposition dont l'id n'existe pas
+      - vérification que la proposition récupérée n'a pas de vote associé
+      - demande de récupération d'une proposition dont l'id n'existe pas
+      - Vérification du changement d'état du workflow : étape suivante, gestion de l'évènement
       - Test workflow - appel aux autres fonctions : addProposal, setVote, startProposalsRegistering
-      - Changement d'état du workflow : étape suivante
-      - Changement d'état du workflow : gestion de l'événement
    4. Démarrage de la session de vote
-      - ajout d'un vote
+      - vérification de l'ajout d'un vote
       - test de l'évènement émis à l'ajout d'un vote
       - ajout d'un second vote pour un même votant
       - ajout d'un vote pour une proposition non existante
-      - Changement d'état du workflow : étape suivante
-      - Changement d'état du workflow : gestion de l'événement
-   5. Fin de la session de vote  
-      - récupération d'un votant pour vérifier son vote
-      - Changement d'état du workflow : étape suivante
-      - Changement d'état du workflow : gestion de l'événement
-   6. Comptage des points et fin du jeu
+      - Vérification du changement d'état du workflow : étape suivante, gestion de l'évènement
+   5. Fin de la session de vote et comptage des points
       - Simulation complète jusqu'au comptage des votes avec 3 votants
       - récupération du gagnant
-      - Changement d'état du workflow : étape suivante
-      - Changement d'état du workflow : gestion de l'événement
+      - Vérification du changement d'état du workflow : étape suivante, gestion de l'évènement
 
 ### Exécution
 Il faut d'abord lancer ganache :  
@@ -86,63 +79,73 @@ truffle test
 ### Résultats
 ```bash
   Contract: Voting
-    Test de l'état initial
-      ✔ should be the good owner, the first status and there is no winner
-    Test getVoter(address)
-      ✔ should get a voter
-      ✔ should revert when caller is not a voter (72ms)
-      ✔ should get empty return when the address is not an address voter
-    Test getOneProposal(uint)
-      ✔ should get one proposal (43ms)
-      ✔ should revert when caller is not a voter
-      ✔ should revert when the id does not exist
-    Test addVoter(address)
-      ✔ should add a voter
-      ✔ should emit VoterRegistered event
-      ✔ should revert when caller is not the owner
-      ✔ should revert when adding voter at the wrong step
-      ✔ should revert when adding the same voter
-    Test addProposal(string)
-      ✔ should add a proposal
-      ✔ should emit ProposalRegistered event
-      ✔ should revert when caller is not a voter
-      ✔ should revert when adding proposal at the wrong step
-      ✔ should revert when adding empty proposal
-    Test setVote(uint)
-      ✔ should set a vote
-      ✔ should emit Voted event
-      ✔ should revert when caller is not a voter
-      ✔ should revert when setting vote at the wrong step
-      ✔ should revert when trying to vote a second time
-      ✔ should revert when trying to vote for a non existent proposal
-    Test des changements d'état
-      Test startProposalsRegistering()
-        ✔ should start the proposals registering
-        ✔ should emit WorkflowStatusChange event
-        ✔ should revert when caller is not the owner
-        ✔ should revert when it is the wrong step (38ms)
-      Test endProposalsRegistering()
-        ✔ should end the proposals registering (40ms)
-        ✔ should emit WorkflowStatusChange event (48ms)
-        ✔ should revert when caller is not the owner
-        ✔ should revert when it is the wrong step
-      Test startVotingSession()
-        ✔ should start the voting session (52ms)
-        ✔ should emit WorkflowStatusChange event (49ms)
-        ✔ should revert when caller is not the owner
-        ✔ should revert when it is the wrong step
-      Test endVotingSession()
-        ✔ should end the voting session (69ms)
-        ✔ should emit WorkflowStatusChange event (64ms)
-        ✔ should revert when caller is not the owner
-        ✔ should revert when it is the wrong step
-      Test tallyVotes()
-        ✔ should tally the votes (275ms)
-        ✔ should revert when caller is not the owner
-        ✔ should revert when it is the wrong step
-
-
-  42 passing (3s)
+    Etat initial
+      ✓ should be the good owner at the initial step
+      ✓ should be the first status  at the initial step
+      ✓ should return 0 for the winning proposal id
+    Tests des autorisations
+      Fonctions avec onlyOwner
+        ✓ should revert addVoter when caller is not the owner
+        ✓ should revert startProposalsRegistering when caller is not the owner
+        ✓ should revert endProposalsRegistering when caller is not the owner
+        ✓ should revert startVotingSession when caller is not the owner
+        ✓ should revert endVotingSession when caller is not the owner
+        ✓ should revert tallyVotes when caller is not the owner
+      Fonctions avec onlyVoters
+        ✓ should revert getVoter when caller is not a voter (50197 gas)
+        ✓ should revert getOneProposal when caller is not a voter
+        ✓ should revert addProposal when caller is not a voter
+        ✓ should revert setVote when caller is not a voter
+    Etape par étape
+      Enregistrement des votants
+        ✓ should get the voter added
+        ✓ should get a voter whithout any votes
+        ✓ should get a voter whithout any proposal
+        ✓ should emit VoterRegistered event (50185 gas)
+        ✓ should get empty return when the address is not an address voter
+        ✓ should revert when adding the same voter
+        Comportement du changement de statut
+          ✓ should start the proposals registering (95003 gas)
+          ✓ should emit WorkflowStatusChange event (95003 gas)
+        Vérification des étapes du workflow
+          ✓ should revert when it is the wrong step
+          ✓ should revert when it is the wrong step
+          ✓ should revert when it is the wrong step
+          ✓ should revert when it is the wrong step
+      Démarrage de l'ajout des propositions
+        ✓ should add a proposal (59285 gas)
+        ✓ should emit ProposalRegistered event (59285 gas)
+        ✓ should revert when adding empty proposal
+        ✓ should revert addVoter when adding voter at the wrong step
+        Comportement du changement de statut
+          ✓ should end the proposals registering (30587 gas)
+          ✓ should emit WorkflowStatusChange event (30587 gas)
+      Fin de l'ajout des propositions
+        ✓ should get the first proposal
+        ✓ should verify than proposal has no vote
+        ✓ should revert when the id does not exist
+        Comportement du changement de statut
+          ✓ should start the voting session (30542 gas)
+          ✓ should emit WorkflowStatusChange event (30542 gas)
+        Vérification des étapes du workflow
+          ✓ should revert when adding proposal at the wrong step
+          ✓ should revert when setting vote at the wrong step
+          ✓ should revert when it is the wrong step
+      Démarrage de la session de vote
+        ✓ should set a vote (77985 gas)
+        ✓ should emit Voted event (77985 gas)
+        ✓ should revert when trying to vote a second time (77985 gas)
+        ✓ should revert when trying to vote for a non existent proposal
+        Comportement du changement de statut
+          ✓ should end the voting session (30521 gas)
+          ✓ should emit WorkflowStatusChange event (30521 gas)
+      Fin de la session de vote et comptage des points
+        ✓ should tally the votes and the winner is known (66439 gas)
+        Comportement du changement de statut
+          ✓ should tally the votes and change the workflow status (66439 gas)
+          ✓ should tally the votes and emit the event (66439 gas)
+  
+   48 passing (2s)
 ```
 ### Couverture
 Suite à l'[issue](https://github.com/sc-forks/solidity-coverage/issues/696) en cours concernant les erreurs de solidity-coverage sur Truffle, j'ai utilisé un [projet utilisant Hardhat](https://github.com/mickablondo/Web3-tests-unitaires/tree/master/hardhat-test) avec le plugin [hardhat-truffle5](https://hardhat.org/hardhat-runner/plugins/nomiclabs-hardhat-truffle5) dans lequel j'ai copié mon Smart Contract et mon fichier de test pour avoir la couverture de test suivante :  
@@ -182,21 +185,21 @@ Le résultat :
 ·············|·····························|··············|·············|·············|··············|··············
 |  Contract  ·  Method                     ·  Min         ·  Max        ·  Avg        ·  # calls     ·  eur (avg)  │
 ·············|·····························|··············|·············|·············|··············|··············
-|  Voting    ·  addProposal                ·       59285  ·      59417  ·      59302  ·          16  ·          -  │
+|  Voting    ·  addProposal                ·       59285  ·      59417  ·      59300  ·          27  ·          -  │
 ·············|·····························|··············|·············|·············|··············|··············
-|  Voting    ·  addVoter                   ·       50185  ·      50197  ·      50196  ·          32  ·          -  │
+|  Voting    ·  addVoter                   ·       50185  ·      50197  ·      50196  ·          54  ·          -  │
 ·············|·····························|··············|·············|·············|··············|··············
-|  Voting    ·  endProposalsRegistering    ·           -  ·          -  ·      30587  ·          20  ·          -  │
+|  Voting    ·  endProposalsRegistering    ·           -  ·          -  ·      30587  ·          27  ·          -  │
 ·············|·····························|··············|·············|·············|··············|··············
-|  Voting    ·  endVotingSession           ·           -  ·          -  ·      30521  ·           8  ·          -  │
+|  Voting    ·  endVotingSession           ·           -  ·          -  ·      30521  ·           7  ·          -  │
 ·············|·····························|··············|·············|·············|··············|··············
-|  Voting    ·  setVote                    ·       60885  ·      77985  ·      75135  ·          12  ·          -  │
+|  Voting    ·  setVote                    ·       60885  ·      77985  ·      74565  ·          15  ·          -  │
 ·············|·····························|··············|·············|·············|··············|··············
-|  Voting    ·  startProposalsRegistering  ·           -  ·          -  ·      95003  ·          30  ·          -  │
+|  Voting    ·  startProposalsRegistering  ·           -  ·          -  ·      95003  ·          29  ·          -  │
 ·············|·····························|··············|·············|·············|··············|··············
-|  Voting    ·  startVotingSession         ·           -  ·          -  ·      30542  ·          16  ·          -  │
+|  Voting    ·  startVotingSession         ·           -  ·          -  ·      30542  ·          14  ·          -  │
 ·············|·····························|··············|·············|·············|··············|··············
-|  Voting    ·  tallyVotes                 ·           -  ·          -  ·      66439  ·           3  ·          -  │
+|  Voting    ·  tallyVotes                 ·           -  ·          -  ·      66439  ·           5  ·          -  │
 ·············|·····························|··············|·············|·············|··············|··············
 |  Deployments                             ·                                          ·  % of limit  ·             │
 ···········································|··············|·············|·············|··············|··············
