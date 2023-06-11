@@ -58,6 +58,7 @@ Chaque fonction du Smart Contract, présentée ci-dessous, est testée de diffé
       - Test workflow - appel aux autres fonctions : addProposal, setVote, startProposalsRegistering
    4. Démarrage de la session de vote
       - vérification de l'ajout d'un vote
+      - vérification que le compteur de vote d'une proposition s'incrémente bien
       - test de l'évènement émis à l'ajout d'un vote
       - ajout d'un second vote pour un même votant
       - ajout d'un vote pour une proposition non existante
@@ -101,7 +102,7 @@ truffle test
         ✓ should get the voter added
         ✓ should get a voter whithout any votes
         ✓ should get a voter whithout any proposal
-        ✓ should emit VoterRegistered event (50185 gas)
+        ✓ should emit VoterRegistered event (50197 gas)
         ✓ should get empty return when the address is not an address voter
         ✓ should revert when adding the same voter
         Comportement du changement de statut
@@ -133,6 +134,7 @@ truffle test
           ✓ should revert when it is the wrong step
       Démarrage de la session de vote
         ✓ should set a vote (77985 gas)
+        ✓ should increment the proposal counter (77985 gas)
         ✓ should emit Voted event (77985 gas)
         ✓ should revert when trying to vote a second time (77985 gas)
         ✓ should revert when trying to vote for a non existent proposal
@@ -145,7 +147,7 @@ truffle test
           ✓ should tally the votes and change the workflow status (66439 gas)
           ✓ should tally the votes and emit the event (66439 gas)
   
-   48 passing (2s)
+   49 passing (12s)
 ```
 ### Couverture
 Suite à l'[issue](https://github.com/sc-forks/solidity-coverage/issues/696) en cours concernant les erreurs de solidity-coverage sur Truffle, j'ai utilisé un [projet utilisant Hardhat](https://github.com/mickablondo/Web3-tests-unitaires/tree/master/hardhat-test) avec le plugin [hardhat-truffle5](https://hardhat.org/hardhat-runner/plugins/nomiclabs-hardhat-truffle5) dans lequel j'ai copié mon Smart Contract et mon fichier de test pour avoir la couverture de test suivante :  
@@ -185,19 +187,19 @@ Le résultat :
 ·············|·····························|··············|·············|·············|··············|··············
 |  Contract  ·  Method                     ·  Min         ·  Max        ·  Avg        ·  # calls     ·  eur (avg)  │
 ·············|·····························|··············|·············|·············|··············|··············
-|  Voting    ·  addProposal                ·       59285  ·      59417  ·      59300  ·          27  ·          -  │
+|  Voting    ·  addProposal                ·       59285  ·      59417  ·      59299  ·          28  ·          -  │
 ·············|·····························|··············|·············|·············|··············|··············
-|  Voting    ·  addVoter                   ·       50185  ·      50197  ·      50196  ·          54  ·          -  │
+|  Voting    ·  addVoter                   ·       50185  ·      50197  ·      50196  ·          55  ·          -  │
 ·············|·····························|··············|·············|·············|··············|··············
-|  Voting    ·  endProposalsRegistering    ·           -  ·          -  ·      30587  ·          27  ·          -  │
+|  Voting    ·  endProposalsRegistering    ·           -  ·          -  ·      30587  ·          28  ·          -  │
 ·············|·····························|··············|·············|·············|··············|··············
 |  Voting    ·  endVotingSession           ·           -  ·          -  ·      30521  ·           7  ·          -  │
 ·············|·····························|··············|·············|·············|··············|··············
-|  Voting    ·  setVote                    ·       60885  ·      77985  ·      74565  ·          15  ·          -  │
+|  Voting    ·  setVote                    ·       60885  ·      77985  ·      74967  ·          17  ·          -  │
 ·············|·····························|··············|·············|·············|··············|··············
-|  Voting    ·  startProposalsRegistering  ·           -  ·          -  ·      95003  ·          29  ·          -  │
+|  Voting    ·  startProposalsRegistering  ·           -  ·          -  ·      95003  ·          30  ·          -  │
 ·············|·····························|··············|·············|·············|··············|··············
-|  Voting    ·  startVotingSession         ·           -  ·          -  ·      30542  ·          14  ·          -  │
+|  Voting    ·  startVotingSession         ·           -  ·          -  ·      30542  ·          15  ·          -  │
 ·············|·····························|··············|·············|·············|··············|··············
 |  Voting    ·  tallyVotes                 ·           -  ·          -  ·      66439  ·           5  ·          -  │
 ·············|·····························|··············|·············|·············|··············|··············

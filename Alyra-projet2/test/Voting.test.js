@@ -321,6 +321,12 @@ contract('Voting', accounts => {
                 expect(voterReturned.votedProposalId).to.be.bignumber.equal(new BN(1));
             });
 
+            it("should increment the proposal counter", async () => {
+                await VotingInstance.setVote(new BN(1), {from: _voter1});
+                const proposalReturned = await VotingInstance.getOneProposal(1, {from: _voter1});
+                expect(proposalReturned.voteCount).to.be.bignumber.equal(new BN(1));
+            });
+
             it('should emit Voted event', async function () {
                 expectEvent(
                     await VotingInstance.setVote(new BN(1), {from: _voter1}),
