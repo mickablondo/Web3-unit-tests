@@ -1,4 +1,4 @@
-# Web3-tests-unitaires
+# Web3-unit-tests
 Exemples de tests unitaires en JavaScript sur des Smart Contracts en Solidity.
 
 - Alyra projet 2 : Tests unitaires d'un système de vote simplifié
